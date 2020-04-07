@@ -1,0 +1,5 @@
+{
+  "jwtPrivateKey": "",
+  "db": "mongodb://localhost/bookstore",
+  "silent_logger": false
+}
