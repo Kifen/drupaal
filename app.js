@@ -6,7 +6,7 @@ const express = require("express");
 const app = express();
 const { logger } = require("./lib/helpers");
 const morgan = require("morgan");
-const apiRoutes = require("./lib/routes/v1");
+const apiRoutes = require("./lib/routes");
 const config = require("config");
 const { error } = require("./lib/middleware");
 
