@@ -6,9 +6,9 @@ const express = require("express");
 const app = express();
 const { logger } = require("./lib/helpers");
 const morgan = require("morgan");
-//const apiRoutes = require("./routes");
+const apiRoutes = require("./lib/routes/v1");
 const config = require("config");
-//const { error } = require("./middleware");
+const { error } = require("./lib/middleware");
 
 const port = process.env.PORT || 3000;
 
@@ -21,8 +21,8 @@ app.use((req, res, next) => {
 
 app.use(express.json({ limit: "50mb" }));
 app.use(morgan("combined", { stream: logger.stream }));
-//app.use("/", apiRoutes);
-//app.use(error);
+app.use("/", apiRoutes);
+app.use(error);
 
 if (!config.get("jwtPrivateKey")) {
   throw new Error("FATAL ERROR: jwtPrivateKey is not defined");
