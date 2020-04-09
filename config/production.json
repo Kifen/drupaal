@@ -1,4 +1,4 @@
 {
   "jwtPrivateKey": "bookstore_jwtPrivateKey",
-  "db": "mongodb://localhost/bookstore"
+  "db": "bookstore_db"
 }
