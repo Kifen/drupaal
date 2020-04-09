@@ -1,6 +1,6 @@
 const config = require("config");
 require("express-async-errors");
-require("./lib/models/db")(config.get("db"));
+require("./lib/models/db")();
 const Joi = require("joi");
 Joi.objectId = require("joi-objectid")(Joi);
 const express = require("express");
