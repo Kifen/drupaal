@@ -1,0 +1,5 @@
+{
+  "jwtPrivateKey": "bookstore_jwtPrivateKey",
+  "db": "bookstore_db",
+  "name": "name_name"
+}
