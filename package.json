@@ -35,7 +35,11 @@
   },
   "scripts": {
     "test": "./node_modules/.bin/mocha \"./test/**/*.spec.js\" --timeout 15000 --exit",
-    "docs": "./node_modules/.bin/jsdoc -c jsdoc.json"
+    "docs": "./node_modules/.bin/jsdoc -c jsdoc.json",
+    "start": "node app.js"
+  },
+  "engines": {
+    "node": "12.16.1"
   },
   "author": "Aseme Kifen",
   "license": "ISC"
