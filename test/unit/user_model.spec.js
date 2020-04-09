@@ -8,12 +8,7 @@ const dbHandler = require("../helpers/db_handler");
 const { genMockBookData, genMockUserData } = require("../helpers/mock");
 
 describe("User model", () => {
-  let password, userData, bookData;
-  before(() => {
-    password = "password";
-    bookData = genMockBookData();
-    userData = genMockUserData();
-  });
+  let password = "password";
 
   describe("Password && jwt", () => {
     it("should create hash from password", async () => {
@@ -55,7 +50,7 @@ describe("User model", () => {
   });
 
   describe("Data Access Layer", () => {
-    let user, book;
+    let user, book, userData, bookData;
 
     const execUser = async () => {
       user = new User(userData);
@@ -68,6 +63,8 @@ describe("User model", () => {
     };
 
     before(async () => {
+      bookData = genMockBookData();
+      userData = genMockUserData();
       await dbHandler.connect();
     });
 

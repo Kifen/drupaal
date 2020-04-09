@@ -3,17 +3,14 @@ const mongoose = require("mongoose");
 
 const genMockUserData = () => {
   return {
-    //_id: new mongoose.Types.ObjectId().toHexString(),
     name: faker.name.findName(),
     email: faker.internet.email(),
     password: faker.internet.password(),
-    //books_created: [],
   };
 };
 
 const genMockBookData = () => {
   return {
-    //_id: new mongoose.Types.ObjectId().toHexString(),
     title: faker.random.words(),
     author: faker.name.findName(),
     description: faker.lorem.paragraph(),
@@ -29,7 +26,16 @@ const genMockBookData = () => {
   };
 };
 
+const genMockBookUpdateData = () => {
+  return {
+    title: faker.random.words(),
+    author: faker.name.findName(),
+    description: faker.lorem.paragraph(),
+  };
+};
+
 module.exports = {
   genMockBookData,
   genMockUserData,
+  genMockBookUpdateData,
 };
