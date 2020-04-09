@@ -79,7 +79,7 @@ describe("User model", () => {
       await dbHandler.clearDatabase();
     });
 
-    it("should push bookId to user's book_created", async () => {
+    it("should push bookId to user's book_created if action is +", async () => {
       execUser();
       execBook();
 
@@ -87,6 +87,42 @@ describe("User model", () => {
       user = await User.findById(user._id);
       expect(user.books_created).to.have.lengthOf(1);
       expect(user.books_created[0]).to.eql(book._id.toString());
+    });
+
+    it("should pop bookId from user's book_created if action is -", async () => {
+      execUser();
+      execBook();
+
+      await User.updateBooksCreated(book._id, user._id, "+");
+      await User.updateBooksCreated(book._id, user._id, "-");
+      user = await User.findById(user._id);
+      expect(user.books_created).to.have.lengthOf(0);
+    });
+
+    it("should return book ID if user created book", async () => {
+      execUser();
+      execBook();
+
+      await User.updateBooksCreated(book._id, user._id, "+");
+      const valid = await User.perm(user._id.toString(), book._id.toString());
+      expect(valid).to.not.be.null;
+      expect(valid).to.be.a("string");
+    });
+
+    it("should return undefined if book was't created by user", async () => {
+      execUser();
+      execBook();
+
+      const valid = await User.perm(user._id.toString(), book._id.toString());
+      expect(valid).to.be.undefined;
+    });
+
+    it("should create a user", async () => {
+      const token = await User.createUser(userData);
+      const user = await User.findOne({ email: userData.email });
+      userData.password = user.password;
+      expect(user).to.have.include(userData);
+      expect(token).to.have.property("accesstoken");
     });
   });
 });
