@@ -8,10 +8,11 @@ module.exports.connect = async () => {
   const uri = await mongod.getConnectionString();
 
   const mongooseOpts = {
+    poolSize: 10,
+    useCreateIndex: true,
+    bufferMaxEntries: 0,
     useNewUrlParser: true,
-    autoReconnect: true,
-    reconnectTries: Number.MAX_VALUE,
-    reconnectInterval: 1000,
+    useUnifiedTopology: true,
   };
 
   await mongoose.connect(uri, mongooseOpts);

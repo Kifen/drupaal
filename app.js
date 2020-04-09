@@ -1,5 +1,6 @@
+const config = require("config");
 require("express-async-errors");
-require("./lib/models/db")();
+require("./lib/models/db")(config.get("db"));
 const Joi = require("joi");
 Joi.objectId = require("joi-objectid")(Joi);
 const express = require("express");
@@ -7,7 +8,6 @@ const app = express();
 const { logger } = require("./lib/helpers");
 const morgan = require("morgan");
 const apiRoutes = require("./lib/routes");
-const config = require("config");
 const { error } = require("./lib/middleware");
 
 const port = process.env.PORT || 3000;

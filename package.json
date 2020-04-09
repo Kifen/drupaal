@@ -22,13 +22,19 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.2",
-    "jsdoc": "^3.6.4"
+    "faker": "^4.1.0",
+    "jsdoc": "^3.6.4",
+    "mocha": "^7.1.1",
+    "mongodb-memory-server": "^6.5.2",
+    "sinon": "^9.0.2"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "./node_modules/.bin/mocha \"./test/**/*.spec.js\" --timeout 15000 --exit",
     "docs": "./node_modules/.bin/jsdoc -c jsdoc.json"
   },
   "author": "Aseme Kifen",
