@@ -67,6 +67,36 @@ describe("Book Model", () => {
       const star = 5;
       rateData = genMockRateData(star);
 
+      describe("Can rate", () => {
+        it("should return undefined if user hasn't rated book", async () => {
+          execUser();
+          execBook();
+
+          const b = await Book.canRate(
+            book._id.toString(),
+            user._id.toString()
+          );
+          expect(b).to.be.a("undefined");
+        });
+
+        it("should return user ID if user has rated book", async () => {
+          execUser();
+          execBook();
+
+          const rateBook = await Book.rateBookById(
+            rateData,
+            book._id,
+            user._id
+          );
+          const b = await Book.canRate(
+            book._id.toString(),
+            user._id.toString()
+          );
+          expect(b).to.be.a("string");
+          expect(rateBook.reviewers[0]).to.eql(b);
+        });
+      });
+
       it("should rate book if book exists", async () => {
         execBook();
         execUser();
@@ -74,7 +104,6 @@ describe("Book Model", () => {
         const b = await Book.rateBookById(rateData, book._id, user._id);
         const u = await User.findOne({ email: user.email });
 
-        console.log(u._id);
         expect(b.reviews).to.be.eql(1);
         expect(b.stars.five).to.eql(1);
         expect(b.reviewers).to.include(u._id);
