@@ -34,8 +34,19 @@ const genMockBookUpdateData = () => {
   };
 };
 
+const genMockRateData = (x) => {
+  return {
+    star: x,
+  };
+};
+
+function genNumber(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
 module.exports = {
   genMockBookData,
   genMockUserData,
   genMockBookUpdateData,
+  genMockRateData,
 };
