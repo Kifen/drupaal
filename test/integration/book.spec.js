@@ -15,13 +15,12 @@ chai.use(chaiHttp);
 
 describe("/api/v1/books", () => {
   const baseAPi = "/api/v1/books";
-  let user, book, userData, bookData, bookUpdateData, rateData;
+  const invalidId = "5e9065fec936fa46ed5d5af1";
+  let user, book, userData, bookData, token, bookUpdateData, rateData;
 
   const execUser = async () => {
-    user = new User({ email: userData.email, name: userData.name });
-    await user.setPassword(userData.password);
-    console.log();
-    await user.save();
+    token = await User.createUser(userData);
+    user = await User.findUserByEmail(userData.email);
   };
 
   const execBook = async () => {
@@ -45,7 +44,7 @@ describe("/api/v1/books", () => {
 
   describe("Create book: /POST", () => {
     it("should create a new book", async () => {
-      const token = await User.createUser(userData);
+      await execUser();
       const { title, author } = bookData;
       const description = bookData.description.substring(0, 99);
       chai
@@ -53,7 +52,8 @@ describe("/api/v1/books", () => {
         .post(baseAPi)
         .set("Authorization", `Bearer ${token.accesstoken}`)
         .send({ title, author, description })
-        .end((err, res) => {
+        .end(async (err, res) => {
+          const u = await User.findById(user._id);
           expect(res.status).eql(201);
           expect(res.body.message).eql(`Book ${title} created.`);
           //expect(user.books_created[0]).to.be.a("string");
@@ -61,8 +61,8 @@ describe("/api/v1/books", () => {
     });
 
     it("should return 400 if book already exists", async () => {
-      await Book.createBook(bookData);
-      const token = await User.createUser(userData);
+      await execUser();
+      await execBook();
       const { title, author } = bookData;
       const description = bookData.description.substring(0, 99);
       chai
@@ -73,8 +73,121 @@ describe("/api/v1/books", () => {
         .end((err, res) => {
           expect(res.status).eql(400);
           expect(res.body.message).eql(`Book ${title} already exists.`);
-          //expect(user.books_created[0]).to.be.a("string");
         });
+    });
+
+    describe("Update Book: /PUT/:id", () => {
+      it("should update book if user created book resource", async () => {
+        await execUser();
+        await execBook();
+        await User.updateBooksCreated(book._id, user._id, "+");
+
+        chai
+          .request(app)
+          .put(`${baseAPi}/${book._id.toString()}`)
+          .set("Authorization", `Bearer ${token.accesstoken}`)
+          .send({ title: "Lorem", author: "Berrik obi" })
+          .end((err, res) => {
+            expect(res.status).eql(200);
+            expect(res.body.message).eql("Book updated.");
+          });
+      });
+
+      it("should return 401 if user cdid not creat book", async () => {
+        await execUser();
+        await execBook();
+
+        chai
+          .request(app)
+          .put(`${baseAPi}/${book._id.toString()}`)
+          .set("Authorization", `Bearer ${token.accesstoken}`)
+          .send({ title: "Lorem", author: "Berrik obi" })
+          .end((err, res) => {
+            expect(res.status).eql(401);
+            expect(res.body.message).eql("User cannot write to resource.");
+          });
+      });
+
+      it("should return 404 if book does not exist", async () => {
+        await execUser();
+        const { title, author } = bookData;
+        const description = bookData.description.substring(0, 99);
+
+        chai
+          .request(app)
+          .put(`${baseAPi}/${invalidId}`)
+          .set("Authorization", `Bearer ${token.accesstoken}`)
+          .send({ title, author, description })
+          .end((err, res) => {
+            expect(res.status).eql(404);
+            expect(res.body.message).eql(
+              `Book with id ${invalidId} does not exists.`
+            );
+          });
+      });
+
+      it("should return 401 if accesstoken is not provided", async () => {
+        await execBook();
+
+        chai
+          .request(app)
+          .put(`${baseAPi}/${book._id.toString()}`)
+          .send({ title: "Lorem", author: "Berrik obi" })
+          .end((err, res) => {
+            expect(res.status).eql(401);
+            expect(res.body.message).eql(
+              "Authentication failed. Provide an access token."
+            );
+          });
+      });
+
+      it("should return 401 if request header Authorization has no value", async () => {
+        await execBook();
+        await execUser();
+
+        chai
+          .request(app)
+          .put(`${baseAPi}/${book._id.toString()}`)
+          .set("Authorization", `${token.accesstoken}`)
+          .send({ title: "Lorem", author: "Berrik obi" })
+          .end((err, res) => {
+            expect(res.status).eql(401);
+            expect(res.body.message).eql(
+              "Authentication failed. Authorization header is invalid."
+            );
+          });
+      });
+
+      it("should return 401 if access token is invalid", async () => {
+        await execBook();
+        await execUser();
+
+        chai
+          .request(app)
+          .put(`${baseAPi}/${book._id.toString()}`)
+          .set("Authorization", `Bearer `)
+          .send({ title: "Lorem", author: "Berrik obi" })
+          .end((err, res) => {
+            expect(res.status).eql(401);
+            expect(res.body.message).eql(
+              "Authentication failed. Token is invalid."
+            );
+          });
+      });
+
+      it("should return 404 if book id is invalid", async () => {
+        await execUser();
+
+        chai
+          .request(app)
+          .put(`${baseAPi}/1`)
+          .set("Authorization", `Bearer ${token.accesstoken}`)
+          .send({ title: "Lorem", author: "Berrik obi" })
+          .end((err, res) => {
+            expect(res.status).eql(404);
+            expect(res.body.message).eql("Invalid ID.");
+          });
+      });
     });
   });
 });
