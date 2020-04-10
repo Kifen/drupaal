@@ -35,7 +35,7 @@ describe("/api/vi/users", () => {
     await dbHandler.clearDatabase();
   });
 
-  describe("Register User", () => {
+  describe("Register User: /POST", () => {
     it("should register a user if user", (done) => {
       chai
         .request(app)
@@ -64,7 +64,7 @@ describe("/api/vi/users", () => {
         });
     });
 
-    describe("Login User", () => {
+    describe("Login User: /POST", () => {
       it("should login a user if credential is valid", async () => {
         await execUser();
         const body = { email: userData.email, password: userData.password };
@@ -75,6 +75,7 @@ describe("/api/vi/users", () => {
           .end((err, res) => {
             expect(res.status).eql(200);
             expect(res.body.message).eql("Login successful.");
+            expect(res.body.data).to.have.property("accesstoken");
           });
       });
 
