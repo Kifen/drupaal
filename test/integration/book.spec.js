@@ -189,5 +189,25 @@ describe("/api/v1/books", () => {
           });
       });
     });
+
+    describe("Rate Book: /patch:id", () => {
+      rateData = genMockRateData(4);
+
+      it("should return 404 if book does not exist", async () => {
+        await execUser();
+
+        chai
+          .request(app)
+          .patch(`${baseAPi}/${invalidId}`)
+          .set("Authorization", `Bearer ${token.accesstoken}`)
+          .send(rateData)
+          .end((err, res) => {
+            expect(res.status).eql(404);
+            expect(res.body.message).eql(
+              `Book with id ${invalidId} not found.`
+            );
+          });
+      });
+    });
   });
 });
