@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: middleware/validateObjectId.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,36 +17,47 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: middleware/validateObjectId.js</h1>
 
     
 
 
 
     
-
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
     <section>
-        <article><h1>bookstore</h1></article>
+        <article>
+            <pre class="prettyprint source linenums"><code>const mongoose = require("mongoose");
+const { logger, sendJSONResponse } = require("../helpers");
+
+/**
+ * middleware function checks request body and params
+ * for objectIds, and check if the id is valid
+ * @param{Object} req - request object
+ * @param{Object} res - response object
+ * @param{Object} next - middleware function
+ */
+module.exports = function (req, res, next) {
+  let objectIds = [];
+  if (req.params.id) objectIds.push(req.params.id);
+
+  const keys = Object.keys(req.body);
+  keys.forEach((key) => {
+    const match = key.match(/(Id)$/);
+    if (match) objectIds.push(req.body.key);
+  });
+
+  for (let id of objectIds) {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      logger.error(`Invalid ID: &lt;${req.params.id}>`);
+      return sendJSONResponse(res, 404, null, "Invalid ID.");
+    }
+  }
+
+  return next();
+};
+</code></pre>
+        </article>
     </section>
-
-
 
 
 

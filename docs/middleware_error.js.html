@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: middleware/error.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,36 +17,28 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: middleware/error.js</h1>
 
     
 
 
 
     
-
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
     <section>
-        <article><h1>bookstore</h1></article>
+        <article>
+            <pre class="prettyprint source linenums"><code>const { logger, sendJSONResponse } = require("../helpers");
+
+/**
+ * error handler middleware
+ */
+module.exports = function (err, req, res, next) {
+  //log the exception
+  logger.error(err.message, err);
+  return sendJSONResponse(res, 500, null, err.message);
+};
+</code></pre>
+        </article>
     </section>
-
-
 
 
 

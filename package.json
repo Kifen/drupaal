@@ -28,9 +28,11 @@
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.2",
     "faker": "^4.1.0",
+    "istanbul": "^0.4.5",
     "jsdoc": "^3.6.4",
     "mocha": "^7.1.1",
     "mongodb-memory-server": "^6.5.2",
+    "nyc": "^15.0.1",
     "sinon": "^9.0.2"
   },
   "scripts": {

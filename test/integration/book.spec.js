@@ -241,6 +241,22 @@ describe("/api/v1/books", () => {
             expect(res.body.message).eql("User cannot delete to resource.");
           });
       });
+
+      /* it("should delete a book", async () => {
+        await execBook();
+        await execUser();
+        await User.updateBooksCreated(book._id, user._id, "+");
+
+        console.log("BOOK ID = ", book._id);
+        chai
+          .request(app)
+          .delete(`${baseAPi}/${book._id}`)
+          .set("Authorization", `Bearer ${token.accesstoken}`)
+          .end((err, res) => {
+            expect(res.status).eql(204);
+            expect(res.body.message).eql(`Book ${book._id} deleted.`);
+          });
+      }); */
     });
   });
 });
