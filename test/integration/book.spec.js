@@ -31,6 +31,7 @@ describe("/api/v1/books", () => {
   before(async () => {
     bookData = genMockBookData();
     userData = genMockUserData();
+    bookUpdateData = genMockBookUpdateData();
     await dbHandler.connect();
   });
 
@@ -206,6 +207,38 @@ describe("/api/v1/books", () => {
             expect(res.body.message).eql(
               `Book with id ${invalidId} not found.`
             );
+          });
+      });
+
+      /*  it("should rate a book", async () => {
+        await execBook();
+        await execUser();
+        console.log("ID == ", book._id);
+
+        chai
+          .request(app)
+          .patch(`${baseAPi}/${book._id}`)
+          .set("Authorization", `Bearer ${token.accesstoken}`)
+          .send(rateData)
+          .end(async (err, res) => {
+            expect(res.status).eql(200);
+            expect(res.body.message).eql(`Book ${book.title} rated.`);
+          });
+      }); */
+    });
+
+    describe("Delete Book: /DELETE/:id", () => {
+      it("should return 401 if user does does not own book resource", async () => {
+        await execBook();
+        await execUser();
+
+        chai
+          .request(app)
+          .delete(`${baseAPi}/${book._id}`)
+          .set("Authorization", `Bearer ${token.accesstoken}`)
+          .end((err, res) => {
+            expect(res.status).eql(401);
+            expect(res.body.message).eql("User cannot delete to resource.");
           });
       });
     });
